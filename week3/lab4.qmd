@@ -225,10 +225,10 @@ This is the key part of bootstrapping! Remember, our goal is to estimate the var
 #| eval: false
 
 one_bootstrap <- restoration %>% 
-  group_by(success_fct) %>% 
-  mutate(boot = sample(treatment,
-                      size = length(treatment),
-                      replace = FALSE)) %>% 
+  group_by(treatment) %>% 
+  mutate(boot = sample(success,
+                      size = length(success),
+                      replace = TRUE)) %>% 
   ungroup()
 
 ```
@@ -246,6 +246,10 @@ one_bootstrap <- restoration %>%
 bootstrap <- function(i) {
   one_bootstrap %>% 
     mutate(trial = i) %>% 
+  group_by(treatment) %>% 
+  mutate(boot = sample(success,
+                      size = length(success),
+                      replace = TRUE)) 
 permutation_props <- one_bootstrap %>% 
   group_by(boot) %>% 
   summarize(proportion = sum(success)/n())

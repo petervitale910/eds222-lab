@@ -250,6 +250,7 @@ bootstrap <- function(i) {
   mutate(boot = sample(success,
                       size = length(success),
                       replace = TRUE)) 
+  
 permutation_props <- one_bootstrap %>% 
   group_by(boot) %>% 
   summarize(proportion = sum(success)/n())
@@ -258,6 +259,8 @@ permutation_diff_props[i] <- permutation_props$proportion[2] - permutation_props
 }
 
 bootstrap_samples <- map(1:1000, bootstrap) 
+
+bootstrap_df <- as.data.frame(bootstrap_samples)
 
 ```
 

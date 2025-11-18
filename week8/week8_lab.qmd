@@ -1,0 +1,58 @@
+---
+title: "week8_lab"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(terra)
+library(tidyterra)
+theme_set(theme_classic(12))
+set.seed(123)
+```
+
+```{r}
+poisson_model <- glm(count_outcome ~ predictor,
+                     data = my_data,
+                     family = poisson(link = "log"))
+```
+
+```{r}
+wildfires_shape <- vect(here::here('week8', 'wildfires', 'wildfires.shp'))
+
+ca_shape <-  vect(here::here('week8', 'ca_state', 'CA_State.shp'))
+
+wildfires_csv <- read_csv(here::here('week8', 'wildfires', 'wildfires.csv'))
+
+vpd_rast <- rast(here::here('week8', 'wildfires', 'vpd.tiff'))
+```
+
+Fig1 the fuckass scatter
+
+```{r}
+ggplot(wildfires_csv, aes(y = n_fires, x = mean_vpd_kpa))+
+  geom_point(aes(color = fire_year))+
+  scale_color_continuous()
+```
+
+```{r}
+vpd_rast <- vpd_rast %>% 
+  select('1980', '2000', '2022')
+
+ggplot()+
+  geom_spatraster(data = vpd_rast)+
+  scale_fill_viridis_c()+
+  facet_wrap(~lyr)
+```
+
+```{r}
+wildfires_edited <- wildfires_shape %>% 
+  filter(fire_year == '1980'| fire_year == '2000'| fire_year == '2022')
+
+
+
+ggplot()+
+  geom_spatvector(data = ca_shape, fill = 'cyan')+
+  geom_spatvector(data = wildfires_edited)+
+  facet_wrap(~fire_year)
+```

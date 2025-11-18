@@ -1,0 +1,25 @@
+---
+title: "preclass_1116"
+format: html
+editor: visual
+---
+
+Im recreating this plot ![](image.png)
+
+```{r}
+library(tidyverse)
+library(patchwork)
+x <- seq(0:10)
+lamdas <- c(.5, 2, 5)
+
+d1 <- expand_grid(lamdas, x) %>% 
+  mutate(Mass = dpois(x = x, lambda = lamdas))
+
+
+ggplot(d1, aes(x, Mass))+
+  geom_point() + 
+  geom_segment(aes(x=x, xend=x, y=0, yend=Mass))+
+  facet_grid(rows = vars(lamdas))+
+  scale_x_continuous(breaks = x)
+
+```
